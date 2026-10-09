@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Roopam Jewellers</title>
+<meta name="description" content="Roopam Jewellers — call, WhatsApp, follow us, find us and review us on Google.">
+<meta name="theme-color" content="#16070B">
+<meta property="og:title" content="Roopam Jewellers">
+<meta property="og:description" content="Our digital visiting card — call, WhatsApp, follow and find us.">
+<meta property="og:type" content="website">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<meta property="og:image" content="https://mayuraornaments.github.io/roopam-jewellers-visiting-card/og.jpg">
+<meta property="og:url" content="https://mayuraornaments.github.io/roopam-jewellers-visiting-card/">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ── tokens ─────────────────────────────────────────────────────────── */
+:root{
+  --ground:#16070B;
+  --wine:#2A0F16;
+  --ink:#F6E6DC;
+  --muted:rgba(246,230,220,.56);
+  --faint:rgba(246,230,220,.34);
+  --line:rgba(231,185,160,.12);
+
+  --rose:#E7B9A0;
+  --rose-deep:#B9785C;
+  --rose-hi:#FFF0E4;
+
+  --sans:'Jost',"Segoe UI",system-ui,sans-serif;
+
+  --cw:min(92vw,404px);
+  --ease:cubic-bezier(.2,.8,.25,1);
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='170'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='170' height='170' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;min-height:100dvh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:clamp(18px,4vh,48px) 16px;
+  background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:16px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+:focus-visible{outline:2px solid var(--rose);outline-offset:3px;border-radius:6px}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+
+/* ── ambient ground ─────────────────────────────────────────────────── */
+.ground{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.ground .wash{
+  position:absolute;inset:-20%;
+  background:
+    radial-gradient(40% 36% at 50% 46%, rgba(120,36,56,.55), transparent 70%),
+    radial-gradient(42% 40% at 12% 8%, rgba(231,185,160,.10), transparent 62%),
+    radial-gradient(46% 42% at 90% 92%, rgba(150,40,70,.28), transparent 62%);
+  animation:breathe 14s ease-in-out infinite alternate;
+}
+@keyframes breathe{to{transform:scale(1.08) translate(1%,-1%)}}
+.ground .mandala{
+  position:absolute;top:50%;left:50%;width:min(130vmin,1100px);aspect-ratio:1;
+  translate:-50% -50%;opacity:.07;color:var(--rose);
+  animation:turn 140s linear infinite;
+}
+@keyframes turn{to{rotate:360deg}}
+#dust{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.grain{position:absolute;inset:0;pointer-events:none;background-image:var(--grain);opacity:.06;mix-blend-mode:overlay}
+
+/* ── 3D stack: stage › enter › float › tilt › flipper › faces ─────── */
+.stage{position:relative;z-index:1;perspective:1600px;width:var(--cw)}
+.enter,.float,.tilt,.flipper{transform-style:preserve-3d}
+.enter{animation:rise 1.25s var(--ease) both}
+@keyframes rise{
+  from{opacity:0;transform:translateY(46px) rotateX(22deg) scale(.92);filter:blur(6px)}
+  to{opacity:1;transform:none;filter:none}
+}
+.float{animation:hover 7s ease-in-out 1.4s infinite}
+@keyframes hover{50%{transform:translateY(-7px)}}
+.tilt{
+  transform:rotateX(var(--tx,0deg)) rotateY(var(--ty,0deg));
+  transition:transform .6s var(--ease);
+}
+.tilt.live{transition:transform .08s linear}
+.flipper{position:relative;transition:transform 1s cubic-bezier(.6,.05,.25,1)}
+.flipper.flipped{transform:rotateY(180deg)}
+
+.face{
+  position:relative;border-radius:26px;overflow:hidden;
+  -webkit-backface-visibility:hidden;backface-visibility:hidden;
+  background:
+    radial-gradient(120% 60% at 50% 0%, #3E1622 0%, rgba(62,22,34,0) 70%),
+    linear-gradient(180deg,#2A0D15 0%,#1C080E 55%,#14060A 100%);
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.25),
+    0 18px 40px rgba(0,0,0,.40),
+    0 50px 100px rgba(60,8,22,.55),
+    inset 0 1px 0 rgba(255,230,215,.10);
+}
+.back{position:absolute;inset:0;transform:rotateY(180deg)}
+
+/* living foil border */
+.face::before{
+  content:"";position:absolute;inset:0;z-index:7;border-radius:inherit;padding:1.3px;pointer-events:none;
+  background:conic-gradient(from var(--ang),
+    rgba(231,185,160,.14), #FFF0E4 8%, rgba(231,185,160,.5) 16%, rgba(185,120,92,.12) 30%,
+    rgba(231,185,160,.14) 50%, #E7B9A0 60%, rgba(185,120,92,.12) 75%, rgba(231,185,160,.14));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:spin 9s linear infinite;
+}
+@keyframes spin{to{--ang:360deg}}
+
+/* light follows your finger / cursor */
+.face::after{
+  content:"";position:absolute;inset:0;z-index:6;pointer-events:none;
+  background:radial-gradient(380px circle at var(--mx,50%) var(--my,20%),
+    rgba(255,226,206,.16), rgba(231,185,160,.06) 40%, transparent 70%);
+  opacity:var(--glare,0);transition:opacity .45s ease;mix-blend-mode:screen;
+}
+
+/* inner jewellery-box frame + filigree corners */
+.frame{
+  position:absolute;inset:11px;z-index:1;border-radius:17px;pointer-events:none;
+  border:1px solid rgba(231,185,160,.16);
+  animation:fade 1s ease .4s both;
+}
+.corner{position:absolute;width:30px;height:30px;color:var(--rose);z-index:2;pointer-events:none}
+.corner path,.corner circle{stroke-dasharray:60;stroke-dashoffset:60;animation:draw 1.4s var(--ease) .6s forwards}
+.corner.tl{top:7px;left:7px}
+.corner.tr{top:7px;right:7px;transform:scaleX(-1)}
+.corner.bl{bottom:7px;left:7px;transform:scaleY(-1)}
+.corner.br{bottom:7px;right:7px;transform:scale(-1)}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+/* periodic gleam across the card */
+.sheen{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:hidden;border-radius:inherit}
+.sheen i{
+  position:absolute;top:-40%;bottom:-40%;width:30%;left:-50%;transform:skewX(-16deg);
+  background:linear-gradient(100deg,transparent,rgba(255,226,206,.05) 35%,rgba(255,240,228,.22) 50%,rgba(255,226,206,.05) 65%,transparent);
+  animation:glide 8s cubic-bezier(.45,0,.25,1) 2.6s infinite;
+}
+@keyframes glide{0%{left:-50%}22%,100%{left:135%}}
+
+.inner{position:relative;z-index:3;padding:calc(var(--cw)*.105) calc(var(--cw)*.085) calc(var(--cw)*.085);display:flex;flex-direction:column;align-items:center}
+
+/* QR toggle */
+.flip-btn{
+  position:absolute;top:20px;right:20px;z-index:8;width:38px;height:38px;border-radius:50%;
+  display:grid;place-items:center;cursor:pointer;
+  background:rgba(231,185,160,.06);border:1px solid rgba(231,185,160,.22);color:var(--rose);
+  transition:background .25s,transform .35s var(--ease),color .25s;
+  animation:fade .6s ease 2.6s both;
+}
+.flip-btn svg{width:18px;height:18px}
+.flip-btn:hover{background:var(--rose);color:var(--wine);transform:rotate(-12deg) scale(1.06)}
+
+/* ── the mark: the real logo, set inside a living medallion ──────── */
+.mark{position:relative;width:calc(var(--cw)*.46);aspect-ratio:1;display:grid;place-items:center;margin-top:calc(var(--cw)*-.02)}
+.mark svg.medal{position:absolute;inset:0;width:100%;height:100%;overflow:visible;color:var(--rose);opacity:.75}
+.mark .orbit{transform-origin:60px 60px;animation:turn 50s linear infinite}
+.mark .orbit circle{animation:fade 1s ease .9s both}
+.mark .ring{stroke-dasharray:316;stroke-dashoffset:316;animation:draw 1.6s var(--ease) .45s forwards}
+.mark .ring2{stroke-dasharray:280;stroke-dashoffset:280;animation:draw 1.6s var(--ease) .65s forwards}
+.mark .gem{transform-box:fill-box;transform-origin:center;animation:pop .6s var(--ease) both}
+.mark .gem:nth-of-type(1){animation-delay:1.25s}
+.mark .gem:nth-of-type(2){animation-delay:1.35s}
+.mark .gem:nth-of-type(3){animation-delay:1.45s}
+.mark .gem:nth-of-type(4){animation-delay:1.55s}
+@keyframes pop{from{opacity:0;transform:scale(0) rotate(-90deg)}to{opacity:1;transform:none}}
+.mark .glow{
+  position:absolute;inset:14%;border-radius:50%;
+  background:radial-gradient(circle,rgba(231,185,160,.26),transparent 68%);
+  animation:pulse 4.5s ease-in-out 1.6s infinite;
+}
+@keyframes pulse{50%{transform:scale(1.18);opacity:.55}}
+
+/* logo art + a light sweep clipped to the artwork's own shape */
+.art{position:relative;display:block}
+.art img{display:block;width:100%;height:auto}
+.art::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 40%,rgba(255,247,240,.9) 50%,transparent 60%) no-repeat;
+  background-size:300% 100%;background-position:100% 0;
+  -webkit-mask:var(--src) center/100% 100% no-repeat;mask:var(--src) center/100% 100% no-repeat;
+  animation:sweep 6s ease-in-out infinite;animation-delay:inherit;
+}
+@keyframes sweep{0%{background-position:100% 0}38%,100%{background-position:0 0}}
+
+.art.r{width:calc(var(--cw)*.335);translate:-2% 4%;filter:drop-shadow(0 4px 14px rgba(0,0,0,.35));
+  animation:write 1.6s cubic-bezier(.55,.1,.25,1) .7s both;--src:url(logo-mark.png)}
+.art.r::after{animation-delay:3s}
+@keyframes write{
+  from{clip-path:inset(0 100% 0 0);opacity:.2;filter:blur(3px) drop-shadow(0 4px 14px rgba(0,0,0,.35))}
+  to{clip-path:inset(0 0 0 0);opacity:1}
+}
+/* the logo's own sparkle flares now and then */
+.flare{
+  position:absolute;left:81.4%;top:43%;width:30%;aspect-ratio:1;translate:-50% -50%;pointer-events:none;
+  color:#FFF6EE;filter:drop-shadow(0 0 6px rgba(255,236,220,.9));
+  animation:flare 4.8s ease-in-out 2.2s infinite both;
+}
+.flare svg{width:100%;height:100%}
+.flare::before{content:"";position:absolute;inset:-30%;border-radius:50%;background:radial-gradient(circle,rgba(255,230,212,.55),transparent 60%)}
+@keyframes flare{
+  0%,100%{opacity:0;transform:scale(.2) rotate(0)}
+  9%{opacity:1;transform:scale(1) rotate(45deg)}
+  20%,99%{opacity:0;transform:scale(.25) rotate(90deg)}
+}
+
+/* ── wordmark ───────────────────────────────────────────────────────── */
+.word{margin:calc(var(--cw)*.02) 0 0;width:calc(var(--cw)*.74);font-size:0}
+.art.w{--src:url(logo-word.png);animation:open 1.3s var(--ease) 1.5s both}
+.art.w::after{animation-delay:3.4s}
+@keyframes open{
+  from{clip-path:inset(0 50% 0 50%);opacity:0;filter:blur(6px)}
+  to{clip-path:inset(0 0 0 0);opacity:1}
+}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.twinkle{position:absolute;width:14px;height:14px;color:var(--rose-hi);opacity:0;animation:twinkle 3.6s ease-in-out infinite}
+.twinkle.a{top:8%;left:10%;width:11px;height:11px;animation-delay:3.1s}
+.twinkle.b{bottom:9%;right:9%;animation-delay:4.6s}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.2) rotate(0)}12%{opacity:1;transform:scale(1) rotate(45deg)}26%{opacity:0;transform:scale(.2) rotate(90deg)}}
+
+@keyframes popUp{from{opacity:0;transform:translateY(14px) scale(.8)}to{opacity:1;transform:none}}
+
+/* ── divider ────────────────────────────────────────────────────────── */
+.rule{position:relative;width:100%;height:12px;display:grid;place-items:center;margin:calc(var(--cw)*.06) 0 calc(var(--cw)*.05);animation:fade .6s ease 2.1s both}
+.rule::before{
+  content:"";position:absolute;left:0;right:0;top:50%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(231,185,160,.45) 30%,rgba(231,185,160,.45) 70%,transparent);
+  animation:grow 1s var(--ease) 2.1s both;transform-origin:center;
+}
+.rule i{position:relative;width:8px;height:8px;rotate:45deg;background:var(--wine);border:1px solid var(--rose);animation:pop .7s var(--ease) 2.5s both}
+
+/* ── details panel: the visiting-card facts ─────────────────────────── */
+.reveal{animation:slideUp .7s var(--ease) both}
+@keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.panel{width:100%;border:1px solid rgba(231,185,160,.16);border-radius:18px;background:rgba(231,185,160,.035)}
+.info{list-style:none;margin:0;padding:0 calc(var(--cw)*.045)}
+.info li + li{border-top:1px solid var(--line)}
+.info a{display:flex;align-items:center;gap:calc(var(--cw)*.04);padding:calc(var(--cw)*.036) 0}
+.act{
+  position:relative;width:calc(var(--cw)*.11);aspect-ratio:1;flex:none;border-radius:50%;display:grid;place-items:center;
+  color:var(--rose);border:1px solid rgba(231,185,160,.32);
+  background:radial-gradient(circle at 30% 25%,rgba(255,230,215,.14),rgba(231,185,160,.03) 60%);
+  transition:transform .35s var(--ease),background .3s,color .3s,box-shadow .3s;
+}
+.act svg{width:44%;height:44%}
+.info a:hover .act{transform:scale(1.08) rotate(-8deg);color:var(--wine);
+  background:linear-gradient(140deg,#FFF0E4,#E7B9A0 45%,#B9785C);box-shadow:0 8px 22px rgba(231,185,160,.28)}
+.info a:active .act{transform:scale(.92)}
+.info .wa .act::after{
+  content:"";position:absolute;inset:-1px;border-radius:50%;border:1px solid var(--rose);
+  animation:ping 2.6s ease-out 3.2s infinite;
+}
+@keyframes ping{0%{transform:scale(1);opacity:.75}70%,100%{transform:scale(1.5);opacity:0}}
+.info .txt{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
+.lbl{font-size:calc(var(--cw)*.025);font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--rose);opacity:.75}
+.val{font-size:calc(var(--cw)*.041);font-weight:500;letter-spacing:.02em;color:var(--ink);transition:color .25s}
+.val.addr{font-size:calc(var(--cw)*.034);font-weight:400;letter-spacing:0;line-height:1.5;color:rgba(246,230,220,.78)}
+.info a:hover .val{color:var(--rose-hi)}
+
+/* ── review: the one call-out on the card ───────────────────────────── */
+.review{
+  position:relative;overflow:hidden;display:flex;align-items:center;gap:calc(var(--cw)*.035);
+  width:100%;margin-top:12px;padding:calc(var(--cw)*.04) calc(var(--cw)*.045);border-radius:18px;
+  background:linear-gradient(130deg,rgba(242,196,141,.16),rgba(231,185,160,.05) 55%,rgba(242,196,141,.10));
+  border:1px solid rgba(242,196,141,.38);
+}
+.review::before{
+  content:"";position:absolute;top:0;bottom:0;width:35%;left:-50%;transform:skewX(-20deg);pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,240,228,.14),transparent);
+  animation:btnShine 5s ease-in-out 3.8s infinite;
+}
+.review .txt{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.review .k{font-size:calc(var(--cw)*.03);color:var(--muted);letter-spacing:.02em}
+.review .t{font-size:calc(var(--cw)*.045);font-weight:500;color:var(--rose-hi);line-height:1.2}
+.stars{display:flex;gap:4px;margin-top:3px}
+.stars svg{width:calc(var(--cw)*.04);height:calc(var(--cw)*.04);color:#F2C48D;animation:star 4.5s ease-in-out infinite}
+.stars svg:nth-child(1){animation-delay:3s}
+.stars svg:nth-child(2){animation-delay:3.1s}
+.stars svg:nth-child(3){animation-delay:3.2s}
+.stars svg:nth-child(4){animation-delay:3.3s}
+.stars svg:nth-child(5){animation-delay:3.4s}
+/* always five full stars — the motion is only a glint passing through them */
+@keyframes star{
+  0%,16%,100%{transform:none;filter:none}
+  7%{transform:scale(1.3) rotate(12deg);filter:drop-shadow(0 0 6px rgba(242,196,141,.95))}
+}
+.go{
+  width:calc(var(--cw)*.1);aspect-ratio:1;flex:none;border-radius:50%;display:grid;place-items:center;
+  color:var(--wine);background:linear-gradient(140deg,#FFF0E4,#E7B9A0 45%,#C98B6E);
+  box-shadow:0 6px 18px rgba(231,185,160,.25);transition:transform .35s var(--ease);
+}
+.go svg{width:44%;height:44%}
+.review:hover .go{transform:translateX(3px) rotate(-8deg)}
+
+/* ── social tiles ───────────────────────────────────────────────────── */
+.social{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-top:12px}
+.soc{display:flex;align-items:center;gap:calc(var(--cw)*.03);padding:calc(var(--cw)*.032);border-radius:16px;transition:background .3s,border-color .3s}
+.soc .ri{
+  width:calc(var(--cw)*.092);aspect-ratio:1;flex:none;border-radius:50%;display:grid;place-items:center;
+  color:var(--rose);border:1px solid rgba(231,185,160,.25);transition:background .3s,color .3s,transform .4s var(--ease);
+}
+.soc .ri svg{width:48%;height:48%}
+.soc .txt{display:flex;flex-direction:column;min-width:0}
+.soc .v{font-size:calc(var(--cw)*.037);font-weight:500;color:var(--ink)}
+.soc .sub{font-size:calc(var(--cw)*.029);color:var(--faint)}
+.soc:hover{background:rgba(231,185,160,.08);border-color:rgba(231,185,160,.3)}
+.soc:hover .ri{background:var(--rose);color:var(--wine);transform:rotate(-8deg)}
+
+/* ── actions ────────────────────────────────────────────────────────── */
+.actions{display:grid;grid-template-columns:1fr auto;gap:10px;width:100%;margin-top:calc(var(--cw)*.055);animation:popUp .7s var(--ease) 2.8s both}
+.btn{
+  position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:9px;
+  height:calc(var(--cw)*.13);min-height:46px;padding:0 18px;border-radius:999px;cursor:pointer;
+  font-family:var(--sans);font-size:calc(var(--cw)*.036);font-weight:500;letter-spacing:.05em;
+  transition:transform .3s var(--ease),box-shadow .3s,background .3s;
+}
+.btn svg{width:18px;height:18px;flex:none}
+.btn.primary{
+  border:0;color:#2A0F16;
+  background:linear-gradient(135deg,#FFF0E4 0%,#E7B9A0 38%,#C98B6E 72%,#E7B9A0 100%);
+  box-shadow:0 8px 24px rgba(231,185,160,.22),inset 0 1px 0 rgba(255,255,255,.5);
+}
+.btn.primary::after{
+  content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;transform:skewX(-20deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);
+  animation:btnShine 4.5s ease-in-out 3.4s infinite;
+}
+@keyframes btnShine{0%{left:-60%}25%,100%{left:130%}}
+.btn.ghost{width:calc(var(--cw)*.13);min-width:46px;padding:0;background:rgba(231,185,160,.05);border:1px solid rgba(231,185,160,.3);color:var(--rose)}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary:hover{box-shadow:0 12px 32px rgba(231,185,160,.34),inset 0 1px 0 rgba(255,255,255,.5)}
+.btn.ghost:hover{background:rgba(231,185,160,.14)}
+.btn:active{transform:scale(.97)}
+
+/* ── back face: QR ──────────────────────────────────────────────────── */
+.back .inner{height:100%;justify-content:center;gap:calc(var(--cw)*.05);text-align:center}
+.back .word{width:calc(var(--cw)*.56);margin:0}
+.back .art.w{animation:none}
+.qr-tile{
+  position:relative;padding:16px;border-radius:20px;
+  background:linear-gradient(160deg,#FFF6EF,#F3DCCD);
+  box-shadow:0 0 0 1px rgba(231,185,160,.5),0 0 0 7px rgba(231,185,160,.08),0 20px 50px rgba(0,0,0,.45);
+}
+#qr{width:calc(var(--cw)*.5);aspect-ratio:1;display:grid;place-items:center;color:var(--wine);font-size:13px;word-break:break-all}
+#qr img,#qr canvas{width:100%!important;height:auto!important;display:block}
+.qr-tile .scan{
+  position:absolute;left:10px;right:10px;height:2px;top:14px;border-radius:2px;
+  background:linear-gradient(90deg,transparent,#C98B6E,transparent);
+  box-shadow:0 0 12px #C98B6E;animation:scan 2.8s ease-in-out infinite;
+}
+@keyframes scan{50%{top:calc(100% - 16px)}}
+.back p{margin:0;color:var(--muted);font-size:calc(var(--cw)*.036);max-width:24ch}
+.back .btn.ghost{width:auto;padding:0 22px}
+
+/* ── toast & footer ─────────────────────────────────────────────────── */
+.toast{
+  position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));z-index:20;
+  translate:-50% 20px;opacity:0;pointer-events:none;
+  padding:11px 20px;border-radius:999px;font-size:14px;letter-spacing:.03em;
+  background:rgba(42,15,22,.92);border:1px solid rgba(231,185,160,.35);color:var(--rose-hi);
+  backdrop-filter:blur(8px);transition:opacity .35s,translate .45s var(--ease);
+}
+.toast.show{opacity:1;translate:-50% 0}
+.foot{position:relative;z-index:1;margin-top:26px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,230,220,.28);animation:fade 1s ease 3.2s both}
+
+@media (hover:none){
+  .info a:hover .act{transform:none;color:var(--rose);box-shadow:none;background:radial-gradient(circle at 30% 25%,rgba(255,230,215,.14),rgba(231,185,160,.03) 60%)}
+  .info a:hover .val{color:var(--ink)}
+  .soc:hover{background:rgba(231,185,160,.035);border-color:rgba(231,185,160,.16)}
+  .soc:hover .ri{background:none;color:var(--rose);transform:none}
+  .review:hover .go{transform:none}
+}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .sheen,#dust,.twinkle,.qr-tile .scan{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="ground" aria-hidden="true">
+  <div class="wash"></div>
+  <svg class="mandala" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width=".35">
+    <circle cx="100" cy="100" r="96"/><circle cx="100" cy="100" r="78"/><circle cx="100" cy="100" r="40"/>
+    <g id="petals">
+      <path d="M100 22c10 18 10 38 0 56c-10-18-10-38 0-56z"/>
+      <path d="M100 4c6 6 6 12 0 18c-6-6-6-12 0-18z"/>
+    </g>
+    <use href="#petals" transform="rotate(30 100 100)"/><use href="#petals" transform="rotate(60 100 100)"/>
+    <use href="#petals" transform="rotate(90 100 100)"/><use href="#petals" transform="rotate(120 100 100)"/>
+    <use href="#petals" transform="rotate(150 100 100)"/><use href="#petals" transform="rotate(180 100 100)"/>
+    <use href="#petals" transform="rotate(210 100 100)"/><use href="#petals" transform="rotate(240 100 100)"/>
+    <use href="#petals" transform="rotate(270 100 100)"/><use href="#petals" transform="rotate(300 100 100)"/>
+    <use href="#petals" transform="rotate(330 100 100)"/>
+  </svg>
+  <div class="grain"></div>
+</div>
+<canvas id="dust" aria-hidden="true"></canvas>
+
+<!-- shared icon: four-point sparkle -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 0c.6 6.4 5.6 11.4 12 12-6.4.6-11.4 5.6-12 12-.6-6.4-5.6-11.4-12-12C6.4 11.4 11.4 6.4 12 0z"/></symbol>
+  <symbol id="corner" viewBox="0 0 30 30"><g fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"><path d="M3 27V12C3 7 7 3 12 3h15"/><path d="M8 27V15c0-4 3-7 7-7h12"/><circle cx="13.5" cy="13.5" r="1.6"/></g></symbol>
+  <symbol id="star" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.4L12 17.4l-5.8 3 1.1-6.4-4.7-4.6 6.5-.9z"/></symbol>
+</svg>
+
+<main class="stage">
+<div class="enter"><div class="float"><div class="tilt" id="tilt"><div class="flipper" id="flipper">
+
+  <!-- ═════════════ FRONT ═════════════ -->
+  <article class="face front" id="front">
+    <i class="grain"></i>
+    <div class="sheen"><i></i></div>
+    <div class="frame"></div>
+    <svg class="corner tl"><use href="#corner"/></svg><svg class="corner tr"><use href="#corner"/></svg>
+    <svg class="corner bl"><use href="#corner"/></svg><svg class="corner br"><use href="#corner"/></svg>
+
+    <button class="flip-btn" type="button" data-flip aria-label="Show QR code">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3M21 14v.01M14 21h3M20 17v4"/></svg>
+    </button>
+
+    <div class="inner">
+
+      <div class="mark" aria-hidden="true">
+        <span class="glow"></span>
+        <svg class="medal" viewBox="0 0 120 120" fill="none" stroke="currentColor">
+          <g class="orbit"><circle cx="60" cy="60" r="58" stroke-width="1.1" stroke-dasharray=".1 5.4" stroke-linecap="round"/></g>
+          <circle class="ring" cx="60" cy="60" r="50" stroke-width=".9" transform="rotate(-90 60 60)"/>
+          <circle class="ring2" cx="60" cy="60" r="44.5" stroke-width=".5" stroke-opacity=".55" transform="rotate(90 60 60)"/>
+          <g fill="currentColor" stroke="none">
+            <path class="gem" d="M60 6.5l3 3.5-3 3.5-3-3.5z"/>
+            <path class="gem" d="M113.5 60l-3.5 3-3.5-3 3.5-3z"/>
+            <path class="gem" d="M60 113.5l-3-3.5 3-3.5 3 3.5z"/>
+            <path class="gem" d="M6.5 60l3.5-3 3.5 3-3.5 3z"/>
+          </g>
+        </svg>
+        <span class="art r"><img src="logo-mark.png" alt="" width="520" height="343"><span class="flare"><svg><use href="#spark"/></svg></span></span>
+        <svg class="twinkle a"><use href="#spark"/></svg>
+        <svg class="twinkle b"><use href="#spark"/></svg>
+      </div>
+
+      <h1 class="word"><span class="art w"><img src="logo-word.png" alt="Roopam Jewellers" width="1000" height="269"></span></h1>
+
+      <div class="rule" aria-hidden="true"><i></i></div>
+
+      <div class="panel reveal">
+        <ul class="info">
+          <li data-need="phone"><a data-link="tel">
+            <span class="txt"><span class="lbl">Call</span><span class="val" data-text="phone"></span></span>
+            <span class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></span>
+          </a></li>
+          <li data-need="whatsapp"><a class="wa" data-link="wa" target="_blank" rel="noopener">
+            <span class="txt"><span class="lbl">WhatsApp</span><span class="val" data-text="whatsapp"></span></span>
+            <span class="act"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1a13.6 13.6 0 0 1-6.6-5.8c-.5-.9-.8-1.8-.8-2.6 0-1 .5-1.7.9-2 .2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2 0 .4-.1.5l-.4.5c-.1.2-.3.3-.1.6a9.9 9.9 0 0 0 3.9 3.5c.3.1.4.1.6-.1l.8-1c.2-.2.3-.2.6-.1l1.9.9c.3.1.5.2.5.4s0 .7-.1 1.1z"/></svg></span>
+          </a></li>
+          <li><a data-link="maps" target="_blank" rel="noopener">
+            <span class="txt"><span class="lbl">Showroom</span><span class="val addr" data-text="addressLine"></span></span>
+            <span class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+          </a></li>
+        </ul>
+      </div>
+
+      <a class="review reveal" data-link="google" target="_blank" rel="noopener">
+        <span class="txt">
+          <span class="k">Loved shopping with us?</span>
+          <span class="t">Review us on Google</span>
+          <span class="stars" aria-label="5 stars"><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg></span>
+        </span>
+        <span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+
+      <div class="social">
+        <a class="soc panel reveal" data-link="instagram" target="_blank" rel="noopener">
+          <span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.4"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg></span>
+          <span class="txt"><span class="v">Instagram</span><span class="sub">Follow us</span></span>
+        </a>
+        <a class="soc panel reveal" data-link="facebook" target="_blank" rel="noopener">
+          <span class="ri"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21h3.1z"/></svg></span>
+          <span class="txt"><span class="v">Facebook</span><span class="sub">Like our page</span></span>
+        </a>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="save" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+          Save Contact
+        </button>
+        <button class="btn ghost" id="share" type="button" aria-label="Share this card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+        </button>
+      </div>
+
+    </div>
+  </article>
+
+  <!-- ═════════════ BACK ═════════════ -->
+  <article class="face back" id="back" aria-hidden="true">
+    <i class="grain"></i>
+    <div class="frame"></div>
+    <svg class="corner tl"><use href="#corner"/></svg><svg class="corner tr"><use href="#corner"/></svg>
+    <svg class="corner bl"><use href="#corner"/></svg><svg class="corner br"><use href="#corner"/></svg>
+    <div class="inner">
+      <div class="word"><span class="art w"><img src="logo-word.png" alt="Roopam Jewellers" width="1000" height="269"></span></div>
+      <div class="qr-tile"><div id="qr"></div><span class="scan"></span></div>
+      <p>Scan to open our card on your phone</p>
+      <button class="btn ghost" type="button" data-flip>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+        Flip back
+      </button>
+    </div>
+  </article>
+
+</div></div></div></div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   EDIT YOUR DETAILS HERE — empty fields are hidden from the card
+   ════════════════════════════════════════════════════════════════════ */
+const CONFIG = {
+  name:      'Roopam Jewellers',
+  phone:     '+91 99287 32111',
+  whatsapp:  '+91 92144 15721',
+  address:   'C-198, Saraswati Nagar Main Rd, Basni First Phase, Sector-C, Madhuban, Jodhpur, Rajasthan 342005',
+  mapsUrl:   'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Roopam Jewellers, C-198, Saraswati Nagar Main Rd, Basni First Phase, Sector-C, Madhuban, Jodhpur, Rajasthan 342005'),
+  instagram: 'https://www.instagram.com/roopamjewellers_/',
+  facebook:  'https://www.facebook.com/profile.php?id=61595393512623',
+  google:    'https://share.google/76lttQEtuN4F0VEW1',
+  cardUrl:   'https://mayuraornaments.github.io/roopam-jewellers-visiting-card/'   // public link, used for the QR + Share
+};
+
+(function () {
+  const $ = s => document.querySelector(s);
+  const $$ = s => document.querySelectorAll(s);
+  const digits = s => (s || '').replace(/[^\d+]/g, '');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine   = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  /* ── fill links & text from CONFIG ──────────────────────────────── */
+  const phone = digits(CONFIG.phone);
+  const wa    = digits(CONFIG.whatsapp) || phone;
+  const has   = { phone: !!phone, whatsapp: !!wa };
+  const links = {
+    tel: 'tel:' + phone,
+    wa: 'https://wa.me/' + wa.replace('+', '') + '?text=' + encodeURIComponent('Hello Roopam Jewellers, '),
+    instagram: CONFIG.instagram,
+    facebook: CONFIG.facebook,
+    google: CONFIG.google,
+    maps: CONFIG.mapsUrl || CONFIG.google
+  };
+  const text = {
+    phone: CONFIG.phone,
+    whatsapp: CONFIG.whatsapp || CONFIG.phone,
+    addressLine: CONFIG.address || 'Find us on Google Maps'
+  };
+  $$('[data-need]').forEach(el => { if (!has[el.dataset.need]) el.remove(); });
+  $$('[data-link]').forEach(el => { el.href = links[el.dataset.link]; });
+  $$('[data-text]').forEach(el => { el.textContent = text[el.dataset.text]; });
+  // re-number the stagger so removed rows don't leave gaps in the cascade
+  $$('.reveal').forEach((el, i) => el.style.animationDelay = (2.05 + i * .12) + 's');
+
+  const cardUrl = CONFIG.cardUrl || (/^https?:/.test(location.protocol) ? location.href.split('#')[0] : CONFIG.instagram);
+
+  /* ── toast ──────────────────────────────────────────────────────── */
+  const toast = $('#toast'); let tt;
+  const say = msg => { toast.textContent = msg; toast.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove('show'), 2400); };
+
+  /* ── tilt + glare: cursor on desktop, gyroscope on Android ──────── */
+  const tilt = $('#tilt'), faces = $$('.face'), MAX = 8;
+  const apply = (px, py, live) => {
+    tilt.classList.toggle('live', live);
+    tilt.style.setProperty('--ty', ((px - .5) * MAX * 2).toFixed(2) + 'deg');
+    tilt.style.setProperty('--tx', ((.5 - py) * MAX * 2).toFixed(2) + 'deg');
+    faces.forEach(f => {
+      f.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+      f.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+      f.style.setProperty('--glare', live ? '1' : '0');
+    });
+  };
+  if (!reduce && fine) {
+    let raf = 0;
+    tilt.addEventListener('pointermove', e => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const r = tilt.getBoundingClientRect();
+        apply((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height, true);
+      });
+    });
+    tilt.addEventListener('pointerleave', () => apply(.5, .5, false));
+  } else if (!reduce && 'DeviceOrientationEvent' in window && typeof DeviceOrientationEvent.requestPermission !== 'function') {
+    const clamp = v => Math.max(0, Math.min(1, v));
+    let raf = 0;
+    addEventListener('deviceorientation', e => {
+      if (e.gamma == null || raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        apply(clamp(.5 + e.gamma / 70), clamp(.5 + (e.beta - 45) / 70), true);
+      });
+    });
+  }
+
+  /* ── flip to QR ─────────────────────────────────────────────────── */
+  const flipper = $('#flipper'); let qrDone = false;
+  const makeQR = () => {
+    if (qrDone) return;
+    const box = $('#qr');
+    if (window.QRCode) {
+      new QRCode(box, { text: cardUrl, width: 320, height: 320, colorDark: '#2A0F16', colorLight: '#FFF6EF', correctLevel: QRCode.CorrectLevel.M });
+      box.title = '';
+    } else {
+      box.textContent = cardUrl;
+    }
+    qrDone = true;
+  };
+  $$('[data-flip]').forEach(b => b.addEventListener('click', () => {
+    const on = flipper.classList.toggle('flipped');
+    if (on) makeQR();
+    $('#front').setAttribute('aria-hidden', on);
+    $('#back').setAttribute('aria-hidden', !on);
+  }));
+
+  /* ── save contact (.vcf) ────────────────────────────────────────── */
+  const esc = s => s.replace(/([,;\\])/g, '\\$1');
+  $('#save').addEventListener('click', () => {
+    const v = ['BEGIN:VCARD', 'VERSION:3.0', 'N:;' + esc(CONFIG.name) + ';;;', 'FN:' + esc(CONFIG.name), 'ORG:' + esc(CONFIG.name)];
+    if (phone) v.push('TEL;TYPE=WORK,VOICE:' + phone);
+    if (wa && wa !== phone) v.push('TEL;TYPE=CELL:' + wa);
+    if (CONFIG.address) {
+      // "street…, City, State PIN" → vCard street;city;state;pin;country
+      const m = CONFIG.address.match(/^(.*),\s*([^,]+),\s*([^,]+?)\s+(\d{6})$/);
+      v.push('ADR;TYPE=WORK:;;' + (m ? [m[1], m[2], m[3], m[4]].map(esc).join(';') : esc(CONFIG.address) + ';;;') + ';India');
+    }
+    if (CONFIG.cardUrl) v.push('URL:' + CONFIG.cardUrl);
+    v.push('X-SOCIALPROFILE;TYPE=instagram:' + CONFIG.instagram,
+           'X-SOCIALPROFILE;TYPE=facebook:' + CONFIG.facebook,
+           'NOTE:Review us on Google: ' + CONFIG.google, 'END:VCARD');
+    const url = URL.createObjectURL(new Blob([v.join('\r\n')], { type: 'text/vcard;charset=utf-8' }));
+    const a = Object.assign(document.createElement('a'), { href: url, download: 'Roopam-Jewellers.vcf' });
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    say('✦ Contact saved');
+    burst($('#save'));
+  });
+
+  /* ── share ──────────────────────────────────────────────────────── */
+  $('#share').addEventListener('click', async () => {
+    const data = { title: CONFIG.name, text: CONFIG.name + ' — our digital visiting card', url: cardUrl };
+    try {
+      if (navigator.share) { await navigator.share(data); return; }
+      await navigator.clipboard.writeText(cardUrl);
+      say('✦ Link copied');
+    } catch (e) { if (e && e.name !== 'AbortError') say(cardUrl); }
+  });
+
+  /* ── gold dust: drifting particles + the odd four-point sparkle ── */
+  const cvs = $('#dust'), ctx = cvs.getContext('2d');
+  let W = 0, H = 0, parts = [], running = !reduce, bursts = [];
+  const spawn = init => ({
+    x: Math.random() * W, y: init ? Math.random() * H : H + 12,
+    r: Math.random() * 1.5 + .35, vy: -(Math.random() * .28 + .06),
+    sw: Math.random() * 6.28, sws: Math.random() * .008 + .002, amp: Math.random() * 14 + 4,
+    tw: Math.random() * 6.28, tws: Math.random() * .03 + .008, star: Math.random() < .09
+  });
+  const size = () => {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    cvs.width = W * dpr; cvs.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const n = Math.round(Math.min(110, Math.max(40, W * H / 12000)));
+    parts = Array.from({ length: n }, () => spawn(true));
+  };
+  const sparkle = (x, y, s, a) => {
+    ctx.globalAlpha = a; ctx.beginPath();
+    ctx.moveTo(x, y - s); ctx.quadraticCurveTo(x, y, x + s, y); ctx.quadraticCurveTo(x, y, x, y + s);
+    ctx.quadraticCurveTo(x, y, x - s, y); ctx.quadraticCurveTo(x, y, x, y - s); ctx.fill();
+  };
+  function burst(el) {   // a little shower of sparkles from a tapped button
+    if (reduce) return;
+    const r = el.getBoundingClientRect();
+    for (let i = 0; i < 26; i++) {
+      const ang = Math.random() * 6.28, sp = Math.random() * 3.2 + 1;
+      bursts.push({ x: r.left + r.width / 2, y: r.top + r.height / 2, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp - 1.4, life: 1, s: Math.random() * 3 + 2 });
+    }
+  }
+  const frame = () => {
+    if (!running) return;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#F1C9B3';
+    for (let i = 0; i < parts.length; i++) {
+      const p = parts[i];
+      p.y += p.vy; p.sw += p.sws; p.tw += p.tws;
+      if (p.y < -12) { parts[i] = spawn(false); continue; }
+      const x = p.x + Math.sin(p.sw) * p.amp, a = .15 + .85 * (.5 + .5 * Math.sin(p.tw));
+      if (p.star) sparkle(x, p.y, p.r * 4.2 * (.6 + .4 * a), a * .9);
+      else { ctx.globalAlpha = a * .8; ctx.beginPath(); ctx.arc(x, p.y, p.r, 0, 6.28); ctx.fill(); }
+    }
+    ctx.fillStyle = '#FFE6D2';
+    bursts = bursts.filter(b => (b.life -= .022) > 0);
+    for (const b of bursts) { b.x += b.vx; b.y += b.vy; b.vy += .07; b.vx *= .98; sparkle(b.x, b.y, b.s * b.life, b.life); }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(frame);
+  };
+  if (!reduce) {
+    size(); addEventListener('resize', size);
+    requestAnimationFrame(frame);
+    document.addEventListener('visibilitychange', () => {
+      const go = !document.hidden;
+      if (go && !running) { running = true; requestAnimationFrame(frame); } else running = go;
+    });
+    $$('.info a, .review, .soc').forEach(el => el.addEventListener('pointerdown', () => burst(el.querySelector('.act, .ri, .go') || el)));
+  }
+})();
+</script>
+</body>
+</html>
